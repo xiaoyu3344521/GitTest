@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysd.mapper.ModulesMapper">
+<select id="getAllModules" resultType="modules">
+ select * from modules
+</select>
+<update id="updateModulesById">
+ update modules set Name = #{name},Parentid = #{parentId},path = #{path},weight=#{weight} where id=#{id}
+</update>
+<delete id="deleteModulesById">
+ delete from modules where id=#{id}
+</delete>
+<insert id="addModules">
+  insert into modules (name,parentid,path,weight) values(#{name},#{parentId},#{path},#{weight})
+</insert>
+<select id="getModulesIds" resultType="int">
+  select c.id from roles a,rolemodules b,modules c where a.id = b.roleid and b.moduleid = c.id
+  and a.id = #{id} and c.parentid !=0
+</select>
+<delete id="deleteRoleModulesByRoleId">
+  delete from rolemodules where roleid = #{id}
+</delete>
+<insert id="addRoleModules">
+  insert into rolemodules values(uuid(),#{rid},#{integer})
+</insert>
+</mapper>

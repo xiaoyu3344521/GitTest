@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="logImpl" value="LOG4J" />
+		<!-- 全局映射器启用缓存 *主要将此属性设置完成即可 -->
+		<setting name="cacheEnabled" value="true" />
+
+		<!-- 查询时，关闭关联对象即时加载以提高性能 -->
+		<setting name="lazyLoadingEnabled" value="false" />
+
+		<!-- 对于未知的SQL查询，允许返回不同的结果集以达到通用的效果 -->
+		<setting name="multipleResultSetsEnabled" value="true" />
+
+		<!-- 设置关联对象加载的形态，此处为按需加载字段(加载字段由SQL指 定)，不会加载关联表的所有字段，以提高性能 -->
+		<setting name="aggressiveLazyLoading" value="true" />
+
+	</settings>
+	<!-- setting配置根据需要再添加 -->
+	<!-- 配置别名 -->
+	<typeAliases>
+		<package name="com.ysd.entity" />
+	</typeAliases>
+	<!-- mapper这里不需要配置了，因为跟spring整合后，在spring那边会进行mapper的扫描 但必须遵循：mapper.xml和mapper.java必须同名且在一个目录 -->
+</configuration>

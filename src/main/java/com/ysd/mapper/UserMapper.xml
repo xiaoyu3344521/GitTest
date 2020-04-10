@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ysd.mapper.UserMapper">
+  <select id="pdLogin" resultType="user">
+     select * from users where LoginName=#{LoginName}
+     and Password =#{Password}
+  </select>
+  <insert id="addUser">
+    insert into users values(uuid(),#{LoginName},#{Password},#{isLockout},#{LastLoginTime},#{PsdWrongTime},#{LockTime},#{ProtectEMail},#{ProtectMTel},#{CreateTime})
+  </insert>
+  <delete id="deleteUserById">
+    delete from users where id=#{id}
+  </delete>
+  <select id="getAll" resultType="user">
+   select * from users where 1=1
+   <if test="LoginName!=null and LoginName!=''">
+      and LoginName like "%"#{LoginName}"%"
+   </if>
+   <if test="begin!=null and begin !=''">
+      and createTime &gt; #{begin}
+   </if>
+   <if test="end!=null and end !=''">
+      and createTime &lt; #{end}
+   </if>
+   <if test="isLockout!=null and isLockout !=''">
+      and isLockout =#{isLockout}
+   </if>
+   <if test="orderby!=null and orderby !='' and orderby=='CreateTime'">
+      order by CreateTime ASC
+   </if>
+   <if test="orderby!=null and orderby !='' and orderby=='LastLoginTime'">
+      order by LastLoginTime ASC
+   </if>
+      limit #{page},#{limit}
+  </select>
+  <select id="getCount" resultType="int">
+       select count(*) from users where 1=1
+   <if test="LoginName!=null and LoginName!=''">
+      and LoginName like "%"#{LoginName}"%"
+   </if>
+   <if test="begin!=null and begin !=''">
+      and createTime &gt; #{begin}
+   </if>
+   <if test="end!=null and end !=''">
+      and createTime &lt; #{end}
+   </if>
+   <if test="isLockout!=null and isLockout !=''">
+      and isLockout =#{isLockout}
+   </if>
+  </select>
+  <update id="updateUserById">
+   update users set LoginName = #{LoginName},ProtectEMail=#{ProtectEMail},ProtectMTel=#{ProtectMTel} where id=#{id}
+  </update>
+  <select id="getUserByLoginNameAndPassword" resultType="user">
+   select * from users where LoginName=#{LoginName} and password = #{Password}
+  </select>
+  <update id="LockUser">
+   update users set isLockout =#{isLockout},LockTime=#{lockTime} where id=#{id}
+  </update> 
+   <update id="unLockUser">
+   update users set isLockout =#{isLockout} where id=#{id}
+  </update>
+  <update id="updatePassword">
+    update users set password=#{Password} where id= #{id}
+  </update>
+  <delete id="deleteUsers">
+    delete from users where id = #{id}
+  </delete>
+  <select id="getAllRoles" resultType="role">
+    select * from roles
+  </select>
+  <select id="GetRolesByUserIdLayUI" resultType="role">
+    select c.* from users a,userroles b,roles c
+    where a.id = b.userid and b.roleid = c.id and a.id = #{id}
+  </select>
+  <insert id="AddUserToRole">
+    insert into userroles values(uuid(),#{uid},#{rid})
+  </insert>
+  <delete id="RemoveUserFromRole">
+    delete from userroles where userid = #{uid} and roleid = #{rid}
+  </delete>
+  <select id="getRoleNames" resultType="string">
+    select c.name from users a,userroles b,roles c where a.id = b.userid and b.roleid = c.id
+    and a.id = #{id}
+  </select>
+  <select id="GetSysRightsJsonLayUI" resultType="modules">
+    select c.* from roles a inner join rolemodules b on a.Id=b.RoleId
+               inner join modules c on b.ModuleId=c.Id where 
+               <foreach collection="list" item="item" separator="or">
+                 a.Name= #{item}
+               </foreach>
+  </select>
+  <update id="updateLastLoginTime">
+    update users set LastLoginTime = #{LastLoginTime} where id=#{id}
+  </update>
+</mapper>
